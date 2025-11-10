@@ -34,32 +34,53 @@ Emlakjet benzeri, kullanıcıların daireleri görüntüleyebileceği ve adminin
 npm install
 ```
 
-### 2. Firebase Yapılandırması
+### 2. Environment Variables Ayarlayın
+
+`.env.example` dosyasını `.env` olarak kopyalayın:
+
+```bash
+cp .env.example .env
+```
+
+`.env` dosyasını açın ve kendi bilgilerinizle doldurun.
+
+### 3. Firebase Yapılandırması
 
 1. [Firebase Console](https://console.firebase.google.com/) üzerinden yeni bir proje oluşturun
 2. Authentication'ı aktifleştirin (Email/Password)
 3. Firestore Database oluşturun
-4. Storage'ı aktifleştirin
-5. Web uygulaması ekleyin ve yapılandırma bilgilerini alın
+4. Web uygulaması ekleyin ve yapılandırma bilgilerini alın
+5. Firebase bilgilerini `.env` dosyasına ekleyin:
 
-`src/config/firebase.js` dosyasındaki Firebase yapılandırmasını güncelleyin:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
-### 3. Admin Kullanıcısı Oluşturma
+### 4. Cloudinary Yapılandırması
+
+1. [Cloudinary](https://cloudinary.com/users/register_free) üzerinden ücretsiz hesap oluşturun
+2. Dashboard'dan **Cloud Name**'inizi alın
+3. Settings → Upload → Upload Presets → Add upload preset
+   - Preset name: `ozdemir_insaat`
+   - Signing Mode: **Unsigned**
+4. Cloudinary bilgilerini `.env` dosyasına ekleyin:
+
+```env
+VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
+VITE_CLOUDINARY_UPLOAD_PRESET=ozdemir_insaat
+```
+
+### 5. Admin Kullanıcısı Oluşturma
 
 Firebase Console > Authentication > Users bölümünden manuel olarak bir admin kullanıcısı ekleyin.
 
-### 4. Firestore Kuralları
+### 6. Firestore Kuralları
 
 Firebase Console > Firestore Database > Rules bölümünde aşağıdaki kuralları ekleyin:
 
@@ -75,21 +96,7 @@ service cloud.firestore {
 }
 ```
 
-### 5. Storage Kuralları
 
-Firebase Console > Storage > Rules bölümünde aşağıdaki kuralları ekleyin:
-
-```
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /properties/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-  }
-}
-```
 
 ## Geliştirme
 

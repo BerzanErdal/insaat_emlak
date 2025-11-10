@@ -1,9 +1,7 @@
 // Cloudinary yapılandırması
-// Dashboard'dan aldığınız bilgileri buraya ekleyin
-
 export const CLOUDINARY_CONFIG = {
-  cloudName: 'dzkroxxzi', // Cloudinary Dashboard'dan alın
-  uploadPreset: 'ozdemir_insaat' // Birazdan oluşturacağız
+  cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+  uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 };
 
 // Resim yükleme fonksiyonu
