@@ -9,7 +9,6 @@ Emlakjet benzeri, kullanıcıların daireleri görüntüleyebileceği ve adminin
 - **Firebase** - Backend servisleri
   - Authentication (Admin girişi)
   - Firestore (Veritabanı)
-  - Storage (Resim yükleme)
 - **React Router** - Sayfa yönlendirme
 
 ## Özellikler
@@ -25,7 +24,7 @@ Emlakjet benzeri, kullanıcıların daireleri görüntüleyebileceği ve adminin
 ### Admin Paneli
 - ✅ Giriş/çıkış (Firebase Authentication)
 - ✅ Daire ekleme, düzenleme ve silme
-- ✅ Resim yükleme (Firebase Storage)
+- ✅ Resim yükleme
 
 ## Kurulum
 
@@ -158,5 +157,4 @@ src/
 ```
 
 ## Lisans
-
 Bu proje eğitim amaçlıdır.
