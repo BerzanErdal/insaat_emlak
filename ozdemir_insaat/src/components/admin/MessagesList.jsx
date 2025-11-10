@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, updateDoc, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../ConfirmModal';
 import './MessagesList.css';
 
 function MessagesList() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     fetchMessages();
@@ -34,34 +37,39 @@ function MessagesList() {
         status: 'read'
       });
       toast.success('✓ Mesaj okundu olarak işaretlendi!', {
-        position: "bottom-right",
         autoClose: 2000,
       });
       fetchMessages();
     } catch (error) {
       console.error('Güncelleme hatası:', error);
-      toast.error('❌ Güncelleme hatası!', {
-        position: "bottom-right",
-      });
+      toast.error('❌ Güncelleme hatası!');
     }
   };
 
-  const deleteMessage = async (id) => {
-    if (window.confirm('Bu mesajı silmek istediğinizden emin misiniz?')) {
-      try {
-        await deleteDoc(doc(db, 'messages', id));
-        toast.success('🗑️ Mesaj başarıyla silindi!', {
-          position: "bottom-right",
-          autoClose: 2000,
-        });
-        fetchMessages();
-      } catch (error) {
-        console.error('Silme hatası:', error);
-        toast.error('❌ Silme hatası!', {
-          position: "bottom-right",
-        });
-      }
+  const deleteMessage = (id) => {
+    setDeleteId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDoc(doc(db, 'messages', deleteId));
+      toast.success('🗑️ Mesaj başarıyla silindi!', {
+        autoClose: 2000,
+      });
+      fetchMessages();
+    } catch (error) {
+      console.error('Silme hatası:', error);
+      toast.error('❌ Silme hatası!');
+    } finally {
+      setShowConfirm(false);
+      setDeleteId(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowConfirm(false);
+    setDeleteId(null);
   };
 
   const formatDate = (timestamp) => {
@@ -76,6 +84,14 @@ function MessagesList() {
 
   return (
     <div className="messages-list">
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="🗑️ Mesajı Sil"
+        message="Bu mesajı silmek istediğinizden emin misiniz?"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
+      
       <h2>📬 Gelen Mesajlar ({messages.length})</h2>
       
       {messages.length === 0 ? (

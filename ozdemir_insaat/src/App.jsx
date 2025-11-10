@@ -48,7 +48,7 @@ function App() {
           />
         </Routes>
         <footer className="footer">
-          <p>&copy; 2024 Özdemir İnşaat. Tüm hakları saklıdır.</p>
+          <p>&copy; 2025 Özdemir İnşaat. Tüm hakları saklıdır.</p>
         </footer>
         <ToastContainer
           position="top-right"

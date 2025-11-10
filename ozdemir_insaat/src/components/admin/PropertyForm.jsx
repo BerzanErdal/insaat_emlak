@@ -87,15 +87,11 @@ function PropertyForm({ property, onClose }) {
         });
       }
 
-      toast.success(property ? '✅ İlan başarıyla güncellendi!' : '✅ İlan başarıyla eklendi!', {
-        position: "top-center",
-      });
+      toast.success(property ? '✅ İlan başarıyla güncellendi!' : '✅ İlan başarıyla eklendi!');
       onClose();
     } catch (error) {
       console.error('Kayıt hatası:', error);
-      toast.error('❌ İşlem sırasında hata oluştu. Lütfen tekrar deneyin.', {
-        position: "top-center",
-      });
+      toast.error('❌ İşlem sırasında hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }

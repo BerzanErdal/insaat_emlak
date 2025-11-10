@@ -33,15 +33,12 @@ function Contact() {
 
       setSuccess(true);
       toast.success('✅ Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.', {
-        position: "top-center",
         autoClose: 4000,
       });
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error('Mesaj gönderme hatası:', error);
-      toast.error('❌ Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.', {
-        position: "top-center",
-      });
+      toast.error('❌ Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }

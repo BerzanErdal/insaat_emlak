@@ -17,14 +17,10 @@ function AdminLogin({ onLogin }) {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('🎉 Giriş başarılı! Hoş geldiniz.', {
-        position: "top-center",
-      });
+      toast.success('🎉 Giriş başarılı! Hoş geldiniz.');
       onLogin();
     } catch (error) {
-      toast.error('❌ Giriş başarısız. Email veya şifre hatalı.', {
-        position: "top-center",
-      });
+      toast.error('❌ Giriş başarısız. Email veya şifre hatalı.');
       console.error('Login error:', error);
     } finally {
       setLoading(false);

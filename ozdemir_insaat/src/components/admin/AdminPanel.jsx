@@ -3,6 +3,7 @@ import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../ConfirmModal';
 import PropertyForm from './PropertyForm';
 import MessagesList from './MessagesList';
 import './AdminPanel.css';
@@ -12,6 +13,8 @@ function AdminPanel() {
   const [showForm, setShowForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [activeTab, setActiveTab] = useState('properties'); // 'properties' veya 'messages'
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     fetchProperties();
@@ -26,21 +29,28 @@ function AdminPanel() {
     setProperties(propertiesData);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Bu ilanı silmek istediğinizden emin misiniz?')) {
-      try {
-        await deleteDoc(doc(db, 'properties', id));
-        toast.success('🗑️ İlan başarıyla silindi!', {
-          position: "top-center",
-        });
-        fetchProperties();
-      } catch (error) {
-        console.error('Silme hatası:', error);
-        toast.error('❌ İlan silinirken hata oluştu.', {
-          position: "top-center",
-        });
-      }
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDoc(doc(db, 'properties', deleteId));
+      toast.success('🗑️ İlan başarıyla silindi!');
+      fetchProperties();
+    } catch (error) {
+      console.error('Silme hatası:', error);
+      toast.error('❌ İlan silinirken hata oluştu.');
+    } finally {
+      setShowConfirm(false);
+      setDeleteId(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowConfirm(false);
+    setDeleteId(null);
   };
 
   const handleEdit = (property) => {
@@ -64,6 +74,14 @@ function AdminPanel() {
 
   return (
     <div className="admin-panel">
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="🗑️ İlanı Sil"
+        message="Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
+      
       <div className="admin-header">
         <h1>Admin Paneli</h1>
         <div className="admin-actions">
