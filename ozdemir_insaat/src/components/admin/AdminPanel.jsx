@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
+import { toast } from 'react-toastify';
 import PropertyForm from './PropertyForm';
 import MessagesList from './MessagesList';
 import './AdminPanel.css';
@@ -29,10 +30,15 @@ function AdminPanel() {
     if (window.confirm('Bu ilanı silmek istediğinizden emin misiniz?')) {
       try {
         await deleteDoc(doc(db, 'properties', id));
+        toast.success('🗑️ İlan başarıyla silindi!', {
+          position: "top-center",
+        });
         fetchProperties();
       } catch (error) {
         console.error('Silme hatası:', error);
-        alert('İlan silinirken hata oluştu');
+        toast.error('❌ İlan silinirken hata oluştu.', {
+          position: "top-center",
+        });
       }
     }
   };

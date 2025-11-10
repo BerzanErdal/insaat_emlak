@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { toast } from 'react-toastify';
 import './Contact.css';
 
 function Contact() {
@@ -31,11 +32,16 @@ function Contact() {
       });
 
       setSuccess(true);
-      alert('✅ Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+      toast.success('✅ Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.', {
+        position: "top-center",
+        autoClose: 4000,
+      });
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error('Mesaj gönderme hatası:', error);
-      alert('❌ Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('❌ Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.', {
+        position: "top-center",
+      });
     } finally {
       setLoading(false);
     }

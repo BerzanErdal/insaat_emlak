@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs, updateDoc, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { toast } from 'react-toastify';
 import './MessagesList.css';
 
 function MessagesList() {
@@ -32,9 +33,16 @@ function MessagesList() {
       await updateDoc(doc(db, 'messages', id), {
         status: 'read'
       });
+      toast.success('✓ Mesaj okundu olarak işaretlendi!', {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
       fetchMessages();
     } catch (error) {
       console.error('Güncelleme hatası:', error);
+      toast.error('❌ Güncelleme hatası!', {
+        position: "bottom-right",
+      });
     }
   };
 
@@ -42,9 +50,16 @@ function MessagesList() {
     if (window.confirm('Bu mesajı silmek istediğinizden emin misiniz?')) {
       try {
         await deleteDoc(doc(db, 'messages', id));
+        toast.success('🗑️ Mesaj başarıyla silindi!', {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
         fetchMessages();
       } catch (error) {
         console.error('Silme hatası:', error);
+        toast.error('❌ Silme hatası!', {
+          position: "bottom-right",
+        });
       }
     }
   };

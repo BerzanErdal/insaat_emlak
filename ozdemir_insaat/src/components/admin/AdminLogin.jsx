@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
+import { toast } from 'react-toastify';
 import './AdminLogin.css';
 
 function AdminLogin({ onLogin }) {
@@ -16,9 +17,14 @@ function AdminLogin({ onLogin }) {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      toast.success('🎉 Giriş başarılı! Hoş geldiniz.', {
+        position: "top-center",
+      });
       onLogin();
     } catch (error) {
-      setError('Giriş başarısız. Email veya şifre hatalı.');
+      toast.error('❌ Giriş başarısız. Email veya şifre hatalı.', {
+        position: "top-center",
+      });
       console.error('Login error:', error);
     } finally {
       setLoading(false);

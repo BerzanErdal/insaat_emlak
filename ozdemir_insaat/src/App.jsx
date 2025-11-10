@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './toastConfig.css';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Properties from './pages/Properties';
@@ -47,6 +50,18 @@ function App() {
         <footer className="footer">
           <p>&copy; 2024 Özdemir İnşaat. Tüm hakları saklıdır.</p>
         </footer>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </Router>
   );

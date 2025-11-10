@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { uploadToCloudinary } from '../../config/cloudinary';
+import { toast } from 'react-toastify';
 import './PropertyForm.css';
 
 function PropertyForm({ property, onClose }) {
@@ -86,11 +87,15 @@ function PropertyForm({ property, onClose }) {
         });
       }
 
-      alert(property ? 'İlan güncellendi!' : 'İlan eklendi!');
+      toast.success(property ? '✅ İlan başarıyla güncellendi!' : '✅ İlan başarıyla eklendi!', {
+        position: "top-center",
+      });
       onClose();
     } catch (error) {
       console.error('Kayıt hatası:', error);
-      alert('İşlem sırasında hata oluştu');
+      toast.error('❌ İşlem sırasında hata oluştu. Lütfen tekrar deneyin.', {
+        position: "top-center",
+      });
     } finally {
       setLoading(false);
     }
