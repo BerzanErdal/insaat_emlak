@@ -14,6 +14,8 @@ function PropertyForm({ property, onClose }) {
     description: property?.description || ''
   });
   const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [existingImages, setExistingImages] = useState(property?.images || []);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -21,7 +23,28 @@ function PropertyForm({ property, onClose }) {
   };
 
   const handleImageChange = (e) => {
-    setImages(Array.from(e.target.files));
+    const files = Array.from(e.target.files);
+    
+    if (files.length === 0) return;
+    
+    // Yeni resimleri mevcut resimlere ekle
+    setImages(prevImages => [...prevImages, ...files]);
+    
+    // Yeni önizlemeler oluştur ve mevcut önizlemelere ekle
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
+    
+    // Input'u temizle (aynı dosyayı tekrar seçebilmek için)
+    e.target.value = '';
+  };
+
+  const removeExistingImage = (index) => {
+    setExistingImages(prevImages => prevImages.filter((_, i) => i !== index));
+  };
+
+  const removeNewImage = (index) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+    setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
   };
 
   const uploadImages = async () => {
@@ -38,10 +61,11 @@ function PropertyForm({ property, onClose }) {
     setLoading(true);
 
     try {
-      let imageUrls = property?.images || [];
+      let imageUrls = [...existingImages];
       
       if (images.length > 0) {
-        imageUrls = await uploadImages();
+        const newImageUrls = await uploadImages();
+        imageUrls = [...imageUrls, ...newImageUrls];
       }
 
       const propertyData = {
@@ -130,12 +154,61 @@ function PropertyForm({ property, onClose }) {
             required
           />
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-          />
+          {/* Mevcut Resimler */}
+          {existingImages.length > 0 && (
+            <div className="existing-images">
+              <label>Mevcut Resimler:</label>
+              <div className="image-preview-grid">
+                {existingImages.map((img, index) => (
+                  <div key={index} className="image-preview-item">
+                    <img src={img} alt={`Mevcut ${index + 1}`} />
+                    <button
+                      type="button"
+                      className="remove-image-btn"
+                      onClick={() => removeExistingImage(index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Yeni Resimler */}
+          <div className="file-input-wrapper">
+            <label htmlFor="file-input" className="file-input-label">
+              📷 Resim Seç (Birden fazla seçilebilir)
+            </label>
+            <input
+              id="file-input"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+
+          {/* Yeni Resim Önizlemeleri */}
+          {imagePreviews.length > 0 && (
+            <div className="new-images">
+              <label>Yeni Resimler:</label>
+              <div className="image-preview-grid">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="image-preview-item">
+                    <img src={preview} alt={`Yeni ${index + 1}`} />
+                    <button
+                      type="button"
+                      className="remove-image-btn"
+                      onClick={() => removeNewImage(index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="form-actions">
             <button type="submit" disabled={loading}>
